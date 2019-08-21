@@ -1,0 +1,77 @@
+# COMP1521 19t2 / Practice Prac Exam / Question 1
+# int everyKth (int *src, int n, int k, int *dest)
+
+	.text
+	.globl	everyKth
+
+# params: src=$a0, n=$a1, k=$a2, dest=$a3
+everyKth:
+	# prologue
+	addi	$sp, $sp, -4
+	sw	$fp, ($sp)
+	la	$fp, ($sp)
+	addi	$sp, $sp, -4
+	sw	$ra, ($sp)
+	addi	$sp, $sp, -4
+	sw	$s0, ($sp)
+	addi	$sp, $sp, -4
+	sw	$s1, ($sp)
+	# if you need to save more $s? registers
+	# add the code to save them here
+
+# function body
+# locals: ...
+
+	# add code for your everyKth function here
+	# local vars: t0 = i, t1 = j
+	
+	li $t0, 0 # i = 0.
+	li $t1, 0 # j = 0.
+	
+	forLoop:
+	   bge $t0, $a1, endLoop
+	   
+	   # find mod
+	   div $t0, $a2
+	   mfhi $t2
+	   
+	   # if (i % k == 0)
+	   bne $t2, $zero, continue
+	   
+	   # dest[j] = src[i]
+	   
+	   # t3 = dest[j]
+	   li $t3, 4
+	   mul $t3, $t1, $t3
+	   add $t3, $t3, $a3
+	   
+	   # t4 = src[i]
+	   li $t4, 4
+	   mul $t4, $t0, $t4
+	   add $t4, $t4, $a0
+	   lw $t4, ($t4)
+	   
+	   #dest[j] = src[i] 
+	   sw $t4, ($t3)
+	   # j++
+	   addi $t1, $t1, 1
+	
+	continue:
+	   addi $t0, $t0, 1
+	   j forLoop
+	   
+	endLoop:
+	   add $v0, $t1, $zero
+
+# epilogue
+	# if you saved more than two $s? registers
+	# add the code to restore them here
+	lw	$s1, ($sp)
+	addi	$sp, $sp, 4
+	lw	$s0, ($sp)
+	addi	$sp, $sp, 4
+	lw	$ra, ($sp)
+	addi	$sp, $sp, 4
+	lw	$fp, ($sp)
+	addi	$sp, $sp, 4
+	jr	$ra
